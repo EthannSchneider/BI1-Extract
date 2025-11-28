@@ -2,7 +2,7 @@ require_relative '../factory/bucket_adapter_factory'
 
 class BucketService
   def initialize
-    bucket_factory = BucketAdapterFactory.new
+    bucket_factory = BucketAdapterFactory.instance
     @bucket_adapter = bucket_factory.get_adapter(ENV['BUCKET_ADAPTER']&.to_sym)
   end
 

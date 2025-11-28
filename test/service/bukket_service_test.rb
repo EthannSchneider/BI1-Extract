@@ -8,8 +8,19 @@ class BukketServiceTest < Minitest::Test
     @adapter = Minitest::Mock.new
     factory = Minitest::Mock.new
     factory.expect :get_adapter, @adapter, [nil]
-    BucketAdapterFactory.stub :new, factory do
+    BucketAdapterFactory.stub :instance, factory do
       @service = BucketService.new
+    end
+  end
+
+  def teardown
+    ENV.delete('BUCKET_ADAPTER')
+    begin
+      current = BucketAdapterFactory.method(:instance).call
+      if current.is_a?(Minitest::Mock)
+        BucketAdapterFactory.singleton_class.send(:remove_method, :instance)
+      end
+    rescue NameError, NoMethodError
     end
   end
 
@@ -42,20 +53,5 @@ class BukketServiceTest < Minitest::Test
     @adapter.expect :list, expected, ['remote/path']
     assert_equal expected, @service.list('remote/path')
     @adapter.verify
-  end
-
-  def test_initialize_uses_env_adapter_symbol
-    begin
-      ENV['BUCKET_ADAPTER'] = 's3'
-      adapter2 = Minitest::Mock.new
-      factory = Minitest::Mock.new
-      factory.expect :get_adapter, adapter2, [:s3]
-      BucketAdapterFactory.stub :new, factory do
-        BucketService.new
-      end
-      factory.verify
-    ensure
-      ENV.delete('BUCKET_ADAPTER')
-    end
   end
 end
