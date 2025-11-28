@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/mock'
 require_relative '../../src/factory/bucket_adapter_factory'
-
+require_relative '../../src/exceptions/unknown_adapter_type_error'
 class BucketAdapterFactoryTest < Minitest::Test
   def test_get_google_adapter_returns_mock_instance
     factory = BucketAdapterFactory.instance
@@ -16,7 +16,7 @@ class BucketAdapterFactoryTest < Minitest::Test
   end
 
   def test_get_adapter_unknown_raises
-    err = assert_raises(RuntimeError) { BucketAdapterFactory.instance.get_adapter(:aws) }
+    err = assert_raises(UnknownAdapterTypeError) { BucketAdapterFactory.instance.get_adapter(:aws) }
     assert_equal "Unknown adapter type: aws", err.message
   end
 

@@ -12,7 +12,7 @@ class BucketAdapterFactory
       end
       @google_adapter ||= GoogleBukketAdapter.new
     else
-      raise "Unknown adapter type: #{adapter_type}"
+      raise UnknownAdapterTypeError, "Unknown adapter type: #{adapter_type}"
     end
   end
 end

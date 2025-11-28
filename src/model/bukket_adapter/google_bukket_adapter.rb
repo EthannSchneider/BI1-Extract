@@ -2,9 +2,14 @@ require "googleauth"
 require "google/cloud/storage"
 require_relative "bukket_adapter_interface"
 require 'dotenv/load'
+require_relative '../../exceptions/missing_google_cloud_credentials_error'
 
 class GoogleBukketAdapter < BukketAdapterInterface
   def initialize
+    if ENV['GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON'].nil? || ENV['GOOGLE_CLOUD_PROJECT_ID'].nil? || ENV['GOOGLE_CLOUD_BUCKET_NAME'].nil?
+      raise MissingGoogleCloudCredentialsError, "Google Cloud credentials are not properly set in environment variables."
+    end
+
     credentials = ::Google::Auth::ServiceAccountCredentials.make_creds(
       json_key_io: StringIO.new(ENV['GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON']),
       scope: ENV['GOOGLE_CLOUD_SCOPE'] || 'https://www.googleapis.com/auth/cloud-platform'
