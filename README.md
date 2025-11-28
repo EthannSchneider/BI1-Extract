@@ -1,4 +1,4 @@
-# BI Extract
+# BI Extract
 ## Getting Started
 ### Prerequisites
 - Ruby 3.0 or higher
