@@ -1,6 +1,7 @@
 require 'json'
 require_relative '../config'
 
+# TODO: Auto-generate this file from the actual endpoints
 get '/swagger.json' do
   content_type :json
   {
